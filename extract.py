@@ -4,40 +4,86 @@ import argparse
 import lxml.html
 import re
 
-# ( init, multiplier, up_score, attr_rules)
 rules = {
-    'a': (0, 0, 100, {'href': '\.pdf$|acm|ieee|arxiv|springer'}),
-    'li': (100, 1, 0, {}),
+    'a': [
+        {
+            'patterns': {
+                'attr': {'href': '\.pdf$|acm|ieee|arxiv|springer'},
+            },
+            'score': 10,
+            'importance': 0.9,
+            'contribute-up': 100,
+        },
+    ],
+    'li': [
+        {
+            'score': 100,
+            'importance': 1.0,
+        },
+    ],
 }
 
 scores = {}
+importance = {}
 
-def propagate_up(e, up_score):
+def attr_pattern_matched(e, attr, pattern):
+    if attr not in e.attrib:
+        return False
+    if re.search(pattern, e.attrib[attr]):
+        return True
+    return False
+
+def attr_patterns_matched(e, patterns):
+    for attr, pattern in patterns.iteritems():
+        if not attr_pattern_matched(e, attr, pattern):
+            return False
+    return True
+
+def pattern_matched(e, ptype, pattern):
+    if ptype == 'attr':
+        return attr_patterns_matched(e, pattern)
+    elif ptype == 'text':
+        pass
+    return False
+
+def patterns_matched(e, rule):
+    if 'patterns' not in rule:
+        return True
+
+    patterns = rule['patterns']
+    for ptype, pattern in patterns.iteritems():
+        if not pattern_matched(e, ptype, pattern):
+            return False
+    return True
+
+def propagate_up(e, score):
     if e is None:
         return
-    if e.tag in rules:
-        (init, mul, up, pattern) = rules[e.tag]
-        scores[e] += mul * up_score
+    scores[e] += importance[e] * score
+    propagate_up(e.getparent(), score)
+
+def contribute_up(e, rule):
+    if 'contribute-up' not in rule:
+        return
+    up_score = rule['contribute-up']
     propagate_up(e.getparent(), up_score)
+
+def process_element(e):
+    scores[e] = 0
+    importance[e] = 0
+    if e.tag not in rules:
+        return
+
+    for rule in rules[e.tag]:
+        if not patterns_matched(e, rule):
+            continue
+        scores[e] += rule['score']
+        importance[e] += rule['importance']
+        contribute_up(e, rule)
 
 def process(doc):
     for e in doc.iter():
-        scores[e] = 0
-        if e.tag in rules:
-            #print e, e.attrib
-            (init, mul, up, arules) = rules[e.tag]
-            matched = True
-            for attr, pattern in arules.iteritems():
-                #print 'ATTR', attr, 'PATTERN', pattern
-                if attr not in e.attrib or not re.search(pattern, e.attrib[attr]):
-                    matched = False
-                    break
-            if not matched:
-                continue
-            #print 'MATCHED'
-            scores[e] = init
-            if up:
-                propagate_up(e.getparent(), up)
+        process_element(e)
 
 def main(fname):
     with open(fname) as f:
