@@ -94,7 +94,8 @@ def main(fname):
     for e, score in sorted(scores.iteritems(), key=lambda (k,v): (v,k), reverse=True):
         if score:
             print e, score
-            print e.text_content()
+            content = e.text_content()
+            print ' '.join(content.split())
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='extract citations')
