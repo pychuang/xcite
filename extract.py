@@ -24,7 +24,7 @@ rules = {
     'h1': [
         {
             'patterns': {
-                'text': 'Publication',
+                'text': 'publication',
             },
             'score': 100,
             'importance': 0.1,
@@ -35,7 +35,7 @@ rules = {
     'h2': [
         {
             'patterns': {
-                'text': 'Publication',
+                'text': 'publication',
             },
             'score': 100,
             'importance': 0.1,
@@ -46,7 +46,7 @@ rules = {
     'h3': [
         {
             'patterns': {
-                'text': 'Publication',
+                'text': 'publication',
             },
             'score': 100,
             'importance': 0.1,
@@ -57,7 +57,7 @@ rules = {
     'h4': [
         {
             'patterns': {
-                'text': 'Publication',
+                'text': 'publication',
             },
             'score': 100,
             'importance': 0.1,
@@ -68,7 +68,7 @@ rules = {
     'h5': [
         {
             'patterns': {
-                'text': 'Publication',
+                'text': 'publication',
             },
             'score': 100,
             'importance': 0.1,
@@ -79,7 +79,7 @@ rules = {
     'h6': [
         {
             'patterns': {
-                'text': 'Publication',
+                'text': 'publication',
             },
             'score': 100,
             'importance': 0.1,
@@ -95,7 +95,7 @@ importance = {}
 def attr_pattern_matched(e, attr, pattern):
     if attr not in e.attrib:
         return False
-    if re.search(pattern, e.attrib[attr]):
+    if re.search(pattern, e.attrib[attr], flags=re.IGNORECASE):
         return True
     else:
         return False
@@ -109,7 +109,7 @@ def attr_patterns_matched(e, patterns):
 def text_pattern_matched(e, pattern):
     if not e.text_content():
         return False
-    if re.search(pattern, e.text_content()):
+    if re.search(pattern, e.text_content(), flags=re.IGNORECASE):
         return True
     else:
         return False
