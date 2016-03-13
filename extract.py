@@ -117,20 +117,25 @@ def process(doc):
     for e in doc.iter():
         process_element(e)
 
-def main(input_file):
+def main(input_file, threshold):
     doc = lxml.html.parse(input_file)
     process(doc)
 
-    print '================================='
+    highest_score = 0
     for e, score in sorted(scores.iteritems(), key=lambda (k,v): (v,k), reverse=True):
-        if score:
-            print e, score
-            content = e.text_content()
-            print ' '.join(content.split())
+        if score == 0:
+            continue
+        highest_score = max(highest_score, score)
+        if score < highest_score * threshold:
+            continue
+        print e, score, highest_score * threshold
+        content = e.text_content()
+        print ' '.join(content.split())
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='extract citations')
     parser.add_argument('-r', '--rules', required=True, help='rules JSON file')
+    parser.add_argument('-t', '--threshold', type=float, default=0.0, help='threshold [0.0 - 1.0]')
     parser.add_argument('input_file', nargs='?', help='input HTML file')
 
     args = parser.parse_args()
@@ -140,4 +145,4 @@ if __name__ == '__main__':
         input_file = sys.stdin
 
     rules = json.load(open(args.rules))
-    main(input_file)
+    main(input_file, args.threshold)
