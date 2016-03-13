@@ -107,9 +107,9 @@ def attr_patterns_matched(e, patterns):
     return True
 
 def text_pattern_matched(e, pattern):
-    if not e.text:
+    if not e.text_content():
         return False
-    if re.search(pattern, e.text):
+    if re.search(pattern, e.text_content()):
         return True
     else:
         return False
