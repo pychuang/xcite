@@ -3,6 +3,7 @@
 import argparse
 import lxml.html
 import re
+import sys
 
 rules = {
     'a': [
@@ -199,10 +200,9 @@ def process(doc):
     for e in doc.iter():
         process_element(e)
 
-def main(fname):
-    with open(fname) as f:
-        doc = lxml.html.parse(f)
-        process(doc)
+def main(input_file):
+    doc = lxml.html.parse(input_file)
+    process(doc)
 
     print '================================='
     for e, score in sorted(scores.iteritems(), key=lambda (k,v): (v,k), reverse=True):
@@ -213,7 +213,11 @@ def main(fname):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='extract citations')
-    parser.add_argument('input_file', help='input HTML file')
+    parser.add_argument('input_file', nargs='?', help='input HTML file')
 
     args = parser.parse_args()
-    main(args.input_file)
+    if args.input_file:
+        input_file = open(args.input_file)
+    else:
+        input_file = sys.stdin
+    main(input_file)
