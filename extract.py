@@ -21,6 +21,72 @@ rules = {
             'importance': 1.0,
         },
     ],
+    'h1': [
+        {
+            'patterns': {
+                'text': 'Publication',
+            },
+            'score': 100,
+            'importance': 0.1,
+            'contribute-forward': 600,
+            'stop-at': ['h1'],
+        },
+    ],
+    'h2': [
+        {
+            'patterns': {
+                'text': 'Publication',
+            },
+            'score': 100,
+            'importance': 0.1,
+            'contribute-forward': 500,
+            'stop-at': ['h1', 'h2'],
+        },
+    ],
+    'h3': [
+        {
+            'patterns': {
+                'text': 'Publication',
+            },
+            'score': 100,
+            'importance': 0.1,
+            'contribute-forward': 400,
+            'stop-at': ['h1', 'h2', 'h3'],
+        },
+    ],
+    'h4': [
+        {
+            'patterns': {
+                'text': 'Publication',
+            },
+            'score': 100,
+            'importance': 0.1,
+            'contribute-forward': 300,
+            'stop-at': ['h1', 'h2', 'h3', 'h4'],
+        },
+    ],
+    'h5': [
+        {
+            'patterns': {
+                'text': 'Publication',
+            },
+            'score': 100,
+            'importance': 0.1,
+            'contribute-forward': 200,
+            'stop-at': ['h1', 'h2', 'h3', 'h4', 'h5'],
+        },
+    ],
+    'h6': [
+        {
+            'patterns': {
+                'text': 'Publication',
+            },
+            'score': 100,
+            'importance': 0.1,
+            'contribute-forward': 100,
+            'stop-at': ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
+        },
+    ],
 }
 
 scores = {}
@@ -31,7 +97,8 @@ def attr_pattern_matched(e, attr, pattern):
         return False
     if re.search(pattern, e.attrib[attr]):
         return True
-    return False
+    else:
+        return False
 
 def attr_patterns_matched(e, patterns):
     for attr, pattern in patterns.iteritems():
@@ -39,11 +106,19 @@ def attr_patterns_matched(e, patterns):
             return False
     return True
 
+def text_pattern_matched(e, pattern):
+    if not e.text:
+        return False
+    if re.search(pattern, e.text):
+        return True
+    else:
+        return False
+
 def pattern_matched(e, ptype, pattern):
     if ptype == 'attr':
         return attr_patterns_matched(e, pattern)
     elif ptype == 'text':
-        pass
+        return text_pattern_matched(e, pattern)
     return False
 
 def patterns_matched(e, rule):
@@ -68,6 +143,38 @@ def contribute_up(e, rule):
     up_score = rule['contribute-up']
     propagate_up(e.getparent(), up_score)
 
+forward_score = 0
+forward_activated = {}
+forward_boundary_inverted = {}
+
+def check_forward_boundary(stop_tag):
+    if stop_tag not in forward_boundary_inverted:
+        return
+
+    global forward_score
+    for start_tag in forward_boundary_inverted[stop_tag]:
+        if start_tag not in forward_activated:
+            continue
+        forward_score -= forward_activated[start_tag]
+        del forward_activated[start_tag]
+
+def contribute_forward(tag, rule):
+    if 'contribute-forward' not  in rule:
+        return
+    score = rule['contribute-forward']
+    if tag not in forward_activated:
+        forward_activated[tag] = 0
+    forward_activated[tag] += score
+    global forward_score
+    forward_score += score
+    if 'stop-at' not in rule:
+        return
+    stop_tags = rule['stop-at']
+    for stop_tag in stop_tags:
+        if stop_tag not in forward_boundary_inverted:
+            forward_boundary_inverted[stop_tag] = set()
+        forward_boundary_inverted[stop_tag].add(tag)
+
 def process_element(e):
     scores[e] = 0
     importance[e] = 0
@@ -80,6 +187,13 @@ def process_element(e):
         scores[e] += rule['score']
         importance[e] += rule['importance']
         contribute_up(e, rule)
+
+    scores[e] += importance[e] * forward_score
+    check_forward_boundary(e.tag)
+    for rule in rules[e.tag]:
+        if not patterns_matched(e, rule):
+            continue
+        contribute_forward(e.tag, rule)
 
 def process(doc):
     for e in doc.iter():
