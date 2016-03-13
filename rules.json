@@ -1,0 +1,84 @@
+{
+    "a": [
+        {
+            "patterns": {
+                "attr": {"href": "\\.pdf$|acm|ieee|arxiv|springer"}
+            },
+            "score": 10,
+            "importance": 0.9,
+            "contribute-up": 100
+        }
+    ],
+    "li": [
+        {
+            "score": 100,
+            "importance": 1.0
+        }
+    ],
+    "h1": [
+        {
+            "patterns": {
+                "text": "publication"
+            },
+            "score": 100,
+            "importance": 0.1,
+            "contribute-forward": 600,
+            "stop-at": ["h1"]
+        }
+    ],
+    "h2": [
+        {
+            "patterns": {
+                "text": "publication"
+            },
+            "score": 100,
+            "importance": 0.1,
+            "contribute-forward": 500,
+            "stop-at": ["h1", "h2"]
+        }
+    ],
+    "h3": [
+        {
+            "patterns": {
+                "text": "publication"
+            },
+            "score": 100,
+            "importance": 0.1,
+            "contribute-forward": 400,
+            "stop-at": ["h1", "h2", "h3"]
+        }
+    ],
+    "h4": [
+        {
+            "patterns": {
+                "text": "publication"
+            },
+            "score": 100,
+            "importance": 0.1,
+            "contribute-forward": 300,
+            "stop-at": ["h1", "h2", "h3", "h4"]
+        }
+    ],
+    "h5": [
+        {
+            "patterns": {
+                "text": "publication"
+            },
+            "score": 100,
+            "importance": 0.1,
+            "contribute-forward": 200,
+            "stop-at": ["h1", "h2", "h3", "h4", "h5"]
+        }
+    ],
+    "h6": [
+        {
+            "patterns": {
+                "text": "publication"
+            },
+            "score": 100,
+            "importance": 0.1,
+            "contribute-forward": 100,
+            "stop-at": ["h1", "h2", "h3", "h4", "h5", "h6"]
+        }
+    ]
+}

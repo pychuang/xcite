@@ -1,95 +1,12 @@
 #!/usr/bin/env python
 
 import argparse
+import json
 import lxml.html
 import re
 import sys
 
-rules = {
-    'a': [
-        {
-            'patterns': {
-                'attr': {'href': '\.pdf$|acm|ieee|arxiv|springer'},
-            },
-            'score': 10,
-            'importance': 0.9,
-            'contribute-up': 100,
-        },
-    ],
-    'li': [
-        {
-            'score': 100,
-            'importance': 1.0,
-        },
-    ],
-    'h1': [
-        {
-            'patterns': {
-                'text': 'publication',
-            },
-            'score': 100,
-            'importance': 0.1,
-            'contribute-forward': 600,
-            'stop-at': ['h1'],
-        },
-    ],
-    'h2': [
-        {
-            'patterns': {
-                'text': 'publication',
-            },
-            'score': 100,
-            'importance': 0.1,
-            'contribute-forward': 500,
-            'stop-at': ['h1', 'h2'],
-        },
-    ],
-    'h3': [
-        {
-            'patterns': {
-                'text': 'publication',
-            },
-            'score': 100,
-            'importance': 0.1,
-            'contribute-forward': 400,
-            'stop-at': ['h1', 'h2', 'h3'],
-        },
-    ],
-    'h4': [
-        {
-            'patterns': {
-                'text': 'publication',
-            },
-            'score': 100,
-            'importance': 0.1,
-            'contribute-forward': 300,
-            'stop-at': ['h1', 'h2', 'h3', 'h4'],
-        },
-    ],
-    'h5': [
-        {
-            'patterns': {
-                'text': 'publication',
-            },
-            'score': 100,
-            'importance': 0.1,
-            'contribute-forward': 200,
-            'stop-at': ['h1', 'h2', 'h3', 'h4', 'h5'],
-        },
-    ],
-    'h6': [
-        {
-            'patterns': {
-                'text': 'publication',
-            },
-            'score': 100,
-            'importance': 0.1,
-            'contribute-forward': 100,
-            'stop-at': ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'],
-        },
-    ],
-}
-
+rules = None
 scores = {}
 importance = {}
 
@@ -213,6 +130,7 @@ def main(input_file):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='extract citations')
+    parser.add_argument('-r', '--rules', required=True, help='rules JSON file')
     parser.add_argument('input_file', nargs='?', help='input HTML file')
 
     args = parser.parse_args()
@@ -220,4 +138,6 @@ if __name__ == '__main__':
         input_file = open(args.input_file)
     else:
         input_file = sys.stdin
+
+    rules = json.load(open(args.rules))
     main(input_file)
