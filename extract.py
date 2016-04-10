@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import argparse
 import json
@@ -19,7 +19,7 @@ def attr_pattern_matched(e, attr, pattern):
         return False
 
 def attr_patterns_matched(e, patterns):
-    for attr, pattern in patterns.iteritems():
+    for attr, pattern in patterns.items():
         if not attr_pattern_matched(e, attr, pattern):
             return False
     return True
@@ -44,7 +44,7 @@ def patterns_matched(e, rule):
         return True
 
     patterns = rule['patterns']
-    for ptype, pattern in patterns.iteritems():
+    for ptype, pattern in patterns.items():
         if not pattern_matched(e, ptype, pattern):
             return False
     return True
@@ -122,15 +122,15 @@ def main(input_file, threshold):
     process(doc)
 
     highest_score = 0
-    for e, score in sorted(scores.iteritems(), key=lambda x: x[1], reverse=True):
+    for e, score in sorted(scores.items(), key=lambda x: x[1], reverse=True):
         if score == 0:
             continue
         highest_score = max(highest_score, score)
         if score < highest_score * threshold:
             continue
-        print e, score, highest_score * threshold
+        print(e, score, highest_score * threshold)
         content = e.text_content()
-        print ' '.join(content.split())
+        print(' '.join(content.split()))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='extract citations')
