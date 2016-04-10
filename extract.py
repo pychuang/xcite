@@ -122,7 +122,7 @@ def main(input_file, threshold):
     process(doc)
 
     highest_score = 0
-    for e, score in sorted(scores.iteritems(), key=lambda (k,v): (v,k), reverse=True):
+    for e, score in sorted(scores.iteritems(), key=lambda x: x[1], reverse=True):
         if score == 0:
             continue
         highest_score = max(highest_score, score)
