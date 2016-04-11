@@ -128,7 +128,7 @@ def main(input_file, threshold):
         highest_score = max(highest_score, score)
         if score < highest_score * threshold:
             continue
-        print(e, score, highest_score * threshold)
+        #print(e, score, highest_score * threshold)
         content = e.text_content()
         print(' '.join(content.split()))
 
