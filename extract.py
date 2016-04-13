@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
+import chardet
 import json
 import lxml.html
 import re
@@ -117,8 +118,8 @@ def process(doc):
     for e in doc.iter():
         process_element(e)
 
-def main(input_file, threshold):
-    doc = lxml.html.parse(input_file)
+def main(content, threshold):
+    doc = lxml.html.fromstring(content)
     process(doc)
 
     highest_score = 0
@@ -139,10 +140,15 @@ if __name__ == '__main__':
     parser.add_argument('input_file', nargs='?', help='input HTML file')
 
     args = parser.parse_args()
-    if args.input_file:
-        input_file = open(args.input_file)
-    else:
-        input_file = sys.stdin
-
     rules = json.load(open(args.rules))
-    main(input_file, args.threshold)
+    if args.input_file:
+        content = open(args.input_file, 'rb').read()
+    else:
+        content = sys.stdin.buffer.read()
+
+    result = chardet.detect(content)
+    encoding = result['encoding']
+    if encoding != 'utf-8':
+        content = content.decode(encoding, 'replace').encode('utf-8')
+
+    main(content, args.threshold)
