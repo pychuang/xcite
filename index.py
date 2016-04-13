@@ -25,8 +25,11 @@ def process(doc):
         process_citation(c)
 
 def main(input_file):
-    doc = lxml.etree.parse(input_file)
-    process(doc)
+    try:
+        doc = lxml.etree.parse(input_file)
+        process(doc)
+    except lxml.etree.XMLSyntaxError:
+        pass
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='read ParsCit ouput XML and then index into Solr')
