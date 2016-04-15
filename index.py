@@ -8,21 +8,21 @@ def process_citation(c):
     citation = {}
     for e in c.iter():
         if e.tag == 'author':
-            if 'authors' not in citation:
+            if 'authors' not in citation and e.text:
                 citation['authors'] = []
             citation['authors'].append(e.text)
-        elif e.tag == 'title':
+        elif e.tag == 'title' and e.text:
             citation['title'] = e.text
-        elif e.tag in ['booktitle', 'journal']:
+        elif e.tag in ['booktitle', 'journal'] and e.text:
             citation['venue'] = e.text
-        elif e.tag == 'date':
-            citation['year'] = e.text
+        elif e.tag == 'date' and e.text:
+            citation['year'] = int(e.text)
     if 'authors' not in citation:
         return
     if 'title' not in citation:
         return
     if 'venue' not in citation:
-        print('=========================================')
+        return
     print(citation)
 
 def process(doc):
