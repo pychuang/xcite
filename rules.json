@@ -15,6 +15,12 @@
             "importance": 1.0
         }
     ],
+    "td": [
+        {
+            "score": 100,
+            "importance": 0.5
+        }
+    ],
     "h1": [
         {
             "patterns": {
