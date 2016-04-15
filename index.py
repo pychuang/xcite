@@ -8,6 +8,8 @@ import sys
 
 
 def index(data):
+    if not data:
+        return
     URL = 'http://csxstaging01.ist.psu.edu:9000/solr/pychuang/update'
     headers = {'Content-type': 'application/json'}
     data_json = json.dumps(data)
