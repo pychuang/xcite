@@ -5,7 +5,6 @@ import lxml.etree
 import sys
 
 def process_citation(c):
-    print(c)
     citation = {}
     for e in c.iter():
         if e.tag == 'author':
@@ -18,6 +17,12 @@ def process_citation(c):
             citation['venue'] = e.text
         elif e.tag == 'date':
             citation['year'] = e.text
+    if 'authors' not in citation:
+        return
+    if 'title' not in citation:
+        return
+    if 'venue' not in citation:
+        print('=========================================')
     print(citation)
 
 def process(doc):
