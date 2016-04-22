@@ -118,7 +118,7 @@ def process(doc):
     for e in doc.iter():
         process_element(e)
 
-def main(content, threshold):
+def main(content, ratio, threshold):
     doc = lxml.html.fromstring(content)
     process(doc)
 
@@ -127,16 +127,24 @@ def main(content, threshold):
         if score == 0:
             continue
         highest_score = max(highest_score, score)
-        if score < highest_score * threshold:
+        if score < threshold:
             continue
-        #print(e, score, highest_score * threshold)
+        if score < highest_score * ratio:
+            continue
         content = e.text_content()
-        print(' '.join(content.split()))
+        content = ' '.join(content.split())
+        if len(content) < 95:
+            continue
+        if not re.search('19\d\d|20\d\d', content):
+            continue
+        #print(e, score, highest_score * ratio, len(content))
+        print(content)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='extract citations')
-    parser.add_argument('-r', '--rules', required=True, help='rules JSON file')
-    parser.add_argument('-t', '--threshold', type=float, default=0.0, help='threshold [0.0 - 1.0]')
+    parser.add_argument('-R', '--rules', required=True, help='rules JSON file')
+    parser.add_argument('-r', '--ratio', type=float, default=0.0, help='ratio [0.0 - 1.0]')
+    parser.add_argument('-t', '--threshold', type=float, default=100.0, help='threshold')
     parser.add_argument('input_file', nargs='?', help='input HTML file')
 
     args = parser.parse_args()
@@ -153,4 +161,4 @@ if __name__ == '__main__':
     else:
         content = content.decode('utf-8')
 
-    main(content, args.threshold)
+    main(content, args.ratio, args.threshold)
