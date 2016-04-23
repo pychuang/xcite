@@ -28,7 +28,7 @@
             },
             "score": 100,
             "importance": 0.1,
-            "contribute-forward": 600,
+            "contribute-forward": 100,
             "stop-at": ["h1"]
         }
     ],
@@ -39,7 +39,7 @@
             },
             "score": 100,
             "importance": 0.1,
-            "contribute-forward": 500,
+            "contribute-forward": 100,
             "stop-at": ["h1", "h2"]
         }
     ],
@@ -50,7 +50,7 @@
             },
             "score": 100,
             "importance": 0.1,
-            "contribute-forward": 400,
+            "contribute-forward": 100,
             "stop-at": ["h1", "h2", "h3"]
         }
     ],
@@ -61,7 +61,7 @@
             },
             "score": 100,
             "importance": 0.1,
-            "contribute-forward": 300,
+            "contribute-forward": 100,
             "stop-at": ["h1", "h2", "h3", "h4"]
         }
     ],
@@ -72,7 +72,7 @@
             },
             "score": 100,
             "importance": 0.1,
-            "contribute-forward": 200,
+            "contribute-forward": 100,
             "stop-at": ["h1", "h2", "h3", "h4", "h5"]
         }
     ],
