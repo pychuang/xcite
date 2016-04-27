@@ -270,6 +270,6 @@ if __name__ == '__main__':
     if encoding != 'utf-8':
         content = content.decode(encoding, 'replace').encode('utf-8')
     else:
-        content = content.decode('utf-8')
+        content = content.decode('utf-8').encode('utf-8')
 
     main(content, args.input_file, args.ratio, args.threshold)
