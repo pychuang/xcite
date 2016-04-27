@@ -4,5 +4,5 @@ extract citations from HTML Web pages
 ## Usage
 
 ```sh
-$ curl http://clgiles.ist.psu.edu/NeuralNetworks.shtml | ./extract.py -r rules.json -t 0.6 | ../ParsCit/bin/parseRefStrings.pl - | ./index.py
+$ curl http://clgiles.ist.psu.edu/NeuralNetworks.shtml | ./extract-parse-index.py -R rules.json -r 0.6 -t 150
 ```
